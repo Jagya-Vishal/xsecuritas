@@ -1,5 +1,5 @@
 <replit_final_file>
-import express, { type Request, Response, NextFunction } from "express";
+import express from 'express', { type Request, Response, NextFunction } from "express";
 import cors from "cors";
 import { config } from "dotenv";
 import { registerRoutes } from "./routes";
