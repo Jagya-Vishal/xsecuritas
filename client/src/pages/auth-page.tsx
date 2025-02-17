@@ -42,6 +42,7 @@ export default function AuthPage() {
     resolver: zodResolver(insertUserSchema),
     defaultValues: {
       username: "",
+      email: "",
       password: "",
       businessName: "",
       phoneNumber: "+91",
@@ -134,6 +135,18 @@ export default function AuthPage() {
                         {registerForm.formState.errors.username && (
                           <p className="text-sm text-destructive mt-1">
                             {registerForm.formState.errors.username.message}
+                          </p>
+                        )}
+                      </div>
+                      <div>
+                        <Label htmlFor="email">Email</Label>
+                        <Input 
+                          type="email"
+                          {...registerForm.register("email")} 
+                        />
+                        {registerForm.formState.errors.email && (
+                          <p className="text-sm text-destructive mt-1">
+                            {registerForm.formState.errors.email.message}
                           </p>
                         )}
                       </div>

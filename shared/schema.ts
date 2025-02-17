@@ -5,6 +5,7 @@ import { z } from "zod";
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
   username: text("username").notNull().unique(),
+  email: text("email").notNull().unique(),
   password: text("password").notNull(),
   businessName: text("business_name").notNull(),
   phoneNumber: text("phone_number").notNull(),
@@ -29,6 +30,7 @@ export const orders = pgTable("orders", {
 });
 
 export const insertUserSchema = createInsertSchema(users).extend({
+  email: z.string().email("Invalid email address"),
   phoneNumber: z.string().regex(/^\+91\d{10}$/, "Must be a valid Indian phone number"),
   password: z.string().min(6, "Password must be at least 6 characters")
 });

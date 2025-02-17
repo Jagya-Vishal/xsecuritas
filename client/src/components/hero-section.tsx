@@ -21,8 +21,8 @@ export function HeroSection() {
           </p>
           <div className="mt-8 md:mt-10 flex flex-col sm:flex-row items-stretch sm:items-center gap-4 sm:gap-x-6">
             <Link href="/auth">
-              <Button size="lg" className="w-full sm:w-auto bg-primary hover:bg-primary/90">
-                Register to View
+              <Button size="lg" className="w-full sm:w-auto bg-primary text-primary-foreground hover:bg-primary/90 dark:text-white">
+                Get Started
               </Button>
             </Link>
             <a 
