@@ -6,6 +6,8 @@ import { AuthProvider } from "@/hooks/use-auth";
 import { ThemeProvider } from "@/hooks/use-theme";
 import HomePage from "@/pages/home-page";
 import AuthPage from "@/pages/auth-page";
+import AboutPage from "@/pages/about-page";
+import BlogPage from "@/pages/blog-page";
 import NotFound from "@/pages/not-found";
 
 function Router() {
@@ -13,6 +15,8 @@ function Router() {
     <Switch>
       <Route path="/" component={HomePage} />
       <Route path="/auth" component={AuthPage} />
+      <Route path="/about" component={AboutPage} />
+      <Route path="/blog" component={BlogPage} />
       <Route component={NotFound} />
     </Switch>
   );
