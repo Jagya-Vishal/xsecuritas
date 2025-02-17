@@ -19,9 +19,9 @@ import { Link } from "wouter";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 
-// Define login form schema
+// Update the login schema to include email
 const loginSchema = z.object({
-  username: z.string().min(1, "Username is required"),
+  email: z.string().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
@@ -33,7 +33,7 @@ export default function AuthPage() {
   const loginForm = useForm<LoginFormData>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -82,8 +82,16 @@ export default function AuthPage() {
                   <form onSubmit={loginForm.handleSubmit((data) => loginMutation.mutate(data))}>
                     <div className="space-y-4">
                       <div>
-                        <Label htmlFor="username">Username</Label>
-                        <Input {...loginForm.register("username")} />
+                        <Label htmlFor="email">Email</Label>
+                        <Input 
+                          type="email" 
+                          {...loginForm.register("email")} 
+                        />
+                        {loginForm.formState.errors.email && (
+                          <p className="text-sm text-destructive mt-1">
+                            {loginForm.formState.errors.email.message}
+                          </p>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="password">Password</Label>
@@ -91,6 +99,11 @@ export default function AuthPage() {
                           type="password"
                           {...loginForm.register("password")}
                         />
+                        {loginForm.formState.errors.password && (
+                          <p className="text-sm text-destructive mt-1">
+                            {loginForm.formState.errors.password.message}
+                          </p>
+                        )}
                       </div>
                       <Button
                         type="submit"
