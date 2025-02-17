@@ -109,10 +109,20 @@ export default function AuthPage() {
                       <div>
                         <Label htmlFor="businessName">Business Name</Label>
                         <Input {...registerForm.register("businessName")} />
+                        {registerForm.formState.errors.businessName && (
+                          <p className="text-sm text-destructive mt-1">
+                            {registerForm.formState.errors.businessName.message}
+                          </p>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="username">Username</Label>
                         <Input {...registerForm.register("username")} />
+                        {registerForm.formState.errors.username && (
+                          <p className="text-sm text-destructive mt-1">
+                            {registerForm.formState.errors.username.message}
+                          </p>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="password">Password</Label>
@@ -120,14 +130,32 @@ export default function AuthPage() {
                           type="password"
                           {...registerForm.register("password")}
                         />
+                        {registerForm.formState.errors.password && (
+                          <p className="text-sm text-destructive mt-1">
+                            {registerForm.formState.errors.password.message}
+                          </p>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="phoneNumber">Phone Number</Label>
-                        <Input {...registerForm.register("phoneNumber")} />
+                        <Input 
+                          {...registerForm.register("phoneNumber")}
+                          defaultValue="+91"
+                        />
+                        {registerForm.formState.errors.phoneNumber && (
+                          <p className="text-sm text-destructive mt-1">
+                            {registerForm.formState.errors.phoneNumber.message}
+                          </p>
+                        )}
                       </div>
                       <div>
                         <Label htmlFor="address">Business Address</Label>
                         <Input {...registerForm.register("address")} />
+                        {registerForm.formState.errors.address && (
+                          <p className="text-sm text-destructive mt-1">
+                            {registerForm.formState.errors.address.message}
+                          </p>
+                        )}
                       </div>
                       <Button
                         type="submit"

@@ -20,6 +20,9 @@ export function ProductCard({ product }: { product: Product }) {
           src={product.imageUrl}
           alt={product.name}
           className="absolute inset-0 w-full h-full object-cover"
+          onError={(e) => {
+            e.currentTarget.src = "/images/placeholder.jpg";
+          }}
         />
       </CardHeader>
       <CardContent className="p-6">
@@ -35,7 +38,7 @@ export function ProductCard({ product }: { product: Product }) {
         ) : (
           <Link href="/auth">
             <Button className="mt-4 w-full">
-              Register to Order
+              Register to View
             </Button>
           </Link>
         )}
