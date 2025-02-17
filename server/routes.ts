@@ -13,14 +13,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
 
   app.get("/api/products/:id", async (req, res) => {
-    const product = await storage.getProduct(Number(req.id));
+    const product = await storage.getProduct(Number(req.params.id));
     if (!product) return res.status(404).send("Product not found");
     res.json(product);
   });
 
   app.post("/api/orders", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
-    
+
     const parseResult = insertOrderSchema.safeParse(req.body);
     if (!parseResult.success) {
       return res.status(400).json(parseResult.error);
@@ -36,7 +36,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   app.get("/api/orders", async (req, res) => {
     if (!req.isAuthenticated()) return res.sendStatus(401);
-    
+
     const orders = await storage.getUserOrders(req.user!.id);
     res.json(orders);
   });
