@@ -34,6 +34,7 @@ export const insertUserSchema = createInsertSchema(users).extend({
 });
 
 export const insertOrderSchema = createInsertSchema(orders);
+export const insertProductSchema = createInsertSchema(products);
 
 export type InsertUser = z.infer<typeof insertUserSchema>;
 export type User = typeof users.$inferSelect;

@@ -11,11 +11,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
       <header className="border-b">
         <div className="container mx-auto px-4 h-16 flex items-center justify-between">
           <Link href="/">
-            <a className="text-2xl font-bold text-primary">
+            <span className="text-2xl font-bold text-primary cursor-pointer">
               Shree Ganpati Handprint
-            </a>
+            </span>
           </Link>
-          
+
           {user ? (
             <div className="flex items-center gap-4">
               <span className="text-sm text-muted-foreground">
@@ -30,7 +30,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             </div>
           ) : (
             <Link href="/auth">
-              <Button>Login</Button>
+              <Button as="span">Login</Button>
             </Link>
           )}
         </div>

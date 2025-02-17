@@ -1,8 +1,11 @@
-import { User, InsertUser, Product, Order } from "@shared/schema";
+import { users, products, orders, type User, type InsertUser, type Product, type Order } from "@shared/schema";
+import { db } from "./db";
+import { eq } from "drizzle-orm";
 import session from "express-session";
-import createMemoryStore from "memorystore";
+import connectPg from "connect-pg-simple";
+import { pool } from "./db";
 
-const MemoryStore = createMemoryStore(session);
+const PostgresSessionStore = connectPg(session);
 
 export interface IStorage {
   getUser(id: number): Promise<User | undefined>;
@@ -15,85 +18,57 @@ export interface IStorage {
   sessionStore: session.Store;
 }
 
-export class MemStorage implements IStorage {
-  private users: Map<number, User>;
-  private products: Map<number, Product>;
-  private orders: Map<number, Order>;
+export class DatabaseStorage implements IStorage {
   sessionStore: session.Store;
-  currentId: number;
 
   constructor() {
-    this.users = new Map();
-    this.products = new Map();
-    this.orders = new Map();
-    this.currentId = 1;
-    this.sessionStore = new MemoryStore({
-      checkPeriod: 86400000,
-    });
-
-    // Seed products
-    this.seedProducts();
-  }
-
-  private seedProducts() {
-    const products: Omit<Product, "id">[] = [
-      {
-        name: "Traditional Jari Work",
-        category: "jari",
-        description: "Intricate golden thread work on premium fabric",
-        imageUrl: "https://example.com/jari.jpg"
-      },
-      {
-        name: "Sequence Work",
-        category: "sequence",
-        description: "Stunning sequence embellishments for sarees",
-        imageUrl: "https://example.com/sequence.jpg"
-      }
-    ];
-
-    products.forEach((product) => {
-      const id = this.currentId++;
-      this.products.set(id, { ...product, id });
+    this.sessionStore = new PostgresSessionStore({ 
+      pool,
+      createTableIfMissing: true
     });
   }
 
   async getUser(id: number): Promise<User | undefined> {
-    return this.users.get(id);
+    const [user] = await db.select().from(users).where(eq(users.id, id));
+    return user;
   }
 
   async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
+    const [user] = await db.select().from(users).where(eq(users.username, username));
+    return user;
   }
 
   async createUser(insertUser: InsertUser): Promise<User> {
-    const id = this.currentId++;
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
+    const [user] = await db
+      .insert(users)
+      .values({ ...insertUser, isWholesaler: true })
+      .returning();
     return user;
   }
 
   async getProducts(): Promise<Product[]> {
-    return Array.from(this.products.values());
+    return await db.select().from(products);
   }
 
   async getProduct(id: number): Promise<Product | undefined> {
-    return this.products.get(id);
+    const [product] = await db.select().from(products).where(eq(products.id, id));
+    return product;
   }
 
   async createOrder(order: Omit<Order, "id">): Promise<Order> {
-    const id = this.currentId++;
-    const newOrder: Order = { ...order, id };
-    this.orders.set(id, newOrder);
+    const [newOrder] = await db
+      .insert(orders)
+      .values(order)
+      .returning();
     return newOrder;
   }
 
   async getUserOrders(userId: number): Promise<Order[]> {
-    return Array.from(this.orders.values()).filter(
-      (order) => order.userId === userId,
-    );
+    return await db
+      .select()
+      .from(orders)
+      .where(eq(orders.userId, userId));
   }
 }
 
-export const storage = new MemStorage();
+export const storage = new DatabaseStorage();

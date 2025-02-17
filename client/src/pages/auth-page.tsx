@@ -11,26 +11,34 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Form } from "@/components/ui/form";
-import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { insertUserSchema, type InsertUser } from "@shared/schema";
 import { Redirect } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import { Link } from "wouter";
+import { useForm } from "react-hook-form";
+import * as z from "zod";
+
+// Define login form schema
+const loginSchema = z.object({
+  username: z.string().min(1, "Username is required"),
+  password: z.string().min(1, "Password is required"),
+});
+
+type LoginFormData = z.infer<typeof loginSchema>;
 
 export default function AuthPage() {
   const { user, loginMutation, registerMutation } = useAuth();
-  const { toast } = useToast();
 
-  const loginForm = useForm({
+  const loginForm = useForm<LoginFormData>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       username: "",
       password: "",
     },
   });
 
-  const registerForm = useForm({
+  const registerForm = useForm<InsertUser>({
     resolver: zodResolver(insertUserSchema),
     defaultValues: {
       username: "",
@@ -49,9 +57,11 @@ export default function AuthPage() {
   return (
     <div className="min-h-screen grid md:grid-cols-2">
       <div className="p-8">
-        <Link href="/" className="inline-flex items-center text-sm mb-8 hover:text-primary transition-colors">
-          <ArrowLeft className="mr-2 h-4 w-4" />
-          Back to Home
+        <Link href="/">
+          <span className="inline-flex items-center text-sm mb-8 hover:text-primary transition-colors cursor-pointer">
+            <ArrowLeft className="mr-2 h-4 w-4" />
+            Back to Home
+          </span>
         </Link>
         <div className="flex items-center justify-center">
           <Card className="w-full max-w-md">
@@ -69,10 +79,7 @@ export default function AuthPage() {
                 </TabsList>
 
                 <TabsContent value="login">
-                  <Form
-                    form={loginForm}
-                    onSubmit={(data) => loginMutation.mutate(data)}
-                  >
+                  <form onSubmit={loginForm.handleSubmit((data) => loginMutation.mutate(data))}>
                     <div className="space-y-4">
                       <div>
                         <Label htmlFor="username">Username</Label>
@@ -93,16 +100,11 @@ export default function AuthPage() {
                         Login
                       </Button>
                     </div>
-                  </Form>
+                  </form>
                 </TabsContent>
 
                 <TabsContent value="register">
-                  <Form
-                    form={registerForm}
-                    onSubmit={(data: InsertUser) =>
-                      registerMutation.mutate(data)
-                    }
-                  >
+                  <form onSubmit={registerForm.handleSubmit((data) => registerMutation.mutate(data))}>
                     <div className="space-y-4">
                       <div>
                         <Label htmlFor="businessName">Business Name</Label>
@@ -135,7 +137,7 @@ export default function AuthPage() {
                         Register
                       </Button>
                     </div>
-                  </Form>
+                  </form>
                 </TabsContent>
               </Tabs>
             </CardContent>
