@@ -1,10 +1,7 @@
 [build]
-command = "npm run build"
-publish = "dist/public"
-functions = "netlify/functions"
-
-[build.environment]
-NODE_VERSION = "20"
+command = "cd client && npm install && npm run build"
+publish = "client/dist"
+environment = { NODE_VERSION = "20" }
 
 [[redirects]]
 from = "/*"
@@ -16,3 +13,6 @@ for = "/*"
 [headers.values]
 X-Frame-Options = "DENY"
 X-XSS-Protection = "1; mode=block"
+X-Content-Type-Options = "nosniff"
+Referrer-Policy = "strict-origin-when-cross-origin"
+Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval'; img-src 'self' data: https:; connect-src 'self' https:;"
